@@ -84,7 +84,7 @@ pids/
 tmp/
 temp/
 .tmp/
-
+docs/
 # ─── Package manager misc ──────────────────────────────────────────────────
 .npm/
 .yarn/cache
