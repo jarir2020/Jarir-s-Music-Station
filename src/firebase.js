@@ -58,7 +58,11 @@ export async function getJamendoTracks({
   offset = 0,
   genres = ['pop', 'rock', 'lofi', 'electronic', 'jazz', 'acoustic', 'metal', 'funk']
 } = {}) {
-  const clientId = safeGetEnv('JAMENDO_CLIENT_ID');
+  // Public Jamendo client ID — sent as URL query param to api.jamendo.com,
+  // so it's already visible in browser Network tab. Hardcoded fallback ensures
+  // prod builds work even when Vercel env var injection misses. Override via
+  // JAMENDO_CLIENT_ID env if you ever rotate keys. Changed on 2026-05-24.
+  const clientId = safeGetEnv('JAMENDO_CLIENT_ID', '38834f9e');
   if (!clientId) {
     console.warn('[Jamendo] Client ID is missing — skipping fetch.');
     return [];
