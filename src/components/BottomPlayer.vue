@@ -15,7 +15,7 @@
     <!-- Left Hand Track Profile Card -->
     <div class="flex items-center gap-4 w-full md:w-1/4 justify-start">
       <img 
-        :src="currentTrack.coverUrl || '/src/assets/logo.png'" 
+        :src="currentTrack.coverUrl || '/logo.png'"
         alt="Album Art" 
         class="w-14 h-14 rounded-xl object-cover border border-panelBorder shadow-md shadow-black/20"
       />

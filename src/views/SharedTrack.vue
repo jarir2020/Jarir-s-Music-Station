@@ -40,7 +40,7 @@
 
       <!-- Graphical Cover Art and Overlay Play button -->
       <div class="relative w-48 h-48 rounded-2xl overflow-hidden border border-panelBorder shadow-xl mb-6 bg-slate-300 dark:bg-white/5 group">
-        <img :src="track.coverUrl || '/src/assets/logo.png'" alt="Art" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+        <img :src="track.coverUrl || '/logo.png'" alt="Art" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
         <button 
           @click="togglePlay"
           class="absolute inset-0 bg-black/35 flex items-center justify-center transition duration-200 text-white"

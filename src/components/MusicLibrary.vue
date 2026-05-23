@@ -67,7 +67,7 @@
         <div class="flex items-center gap-4">
           <!-- Hoverable Cover Art + Circular Play trigger overlay -->
           <div class="relative w-16 h-16 rounded-xl overflow-hidden border border-panelBorder shrink-0 bg-slate-300 dark:bg-white/5">
-            <img :src="track.coverUrl || '/src/assets/logo.png'" alt="Art" class="w-full h-full object-cover group-hover:scale-110 transition duration-300" />
+            <img :src="track.coverUrl || '/logo.png'" alt="Art" class="w-full h-full object-cover group-hover:scale-110 transition duration-300" />
             <button 
               @click="playTrack(track)" 
               class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200 text-white"

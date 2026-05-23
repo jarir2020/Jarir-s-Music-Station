@@ -7,7 +7,7 @@
     <div class="border-b border-panelBorder pb-4 space-y-3">
       <div class="flex items-center gap-4">
         <img 
-          :src="currentTrack.coverUrl || '/src/assets/logo.png'" 
+          :src="currentTrack.coverUrl || '/logo.png'"
           alt="Art" 
           class="w-16 h-16 rounded-xl object-cover border border-panelBorder shadow shrink-0" 
         />
