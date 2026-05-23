@@ -5,7 +5,9 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
+  // Merge .env file values with process.env so Vercel-injected vars are picked up.
+  // Changed on 2026-05-24 01:50:00
+  const env = { ...loadEnv(mode, process.cwd(), ''), ...process.env }
   return {
     plugins: [vue()],
     resolve: {
@@ -17,9 +19,9 @@ export default defineConfig(({ mode }) => {
       port: 8081
     },
     define: {
-      'process.env.PROJECT_URL': JSON.stringify(env.PROJECT_URL),
-      'process.env.PUBLISHABLE_KEY': JSON.stringify(env.PUBLISHABLE_KEY),
-      'process.env.JAMENDO_CLIENT_ID': JSON.stringify(env.JAMENDO_CLIENT_ID)
+      'process.env.PROJECT_URL': JSON.stringify(env.PROJECT_URL || ''),
+      'process.env.PUBLISHABLE_KEY': JSON.stringify(env.PUBLISHABLE_KEY || ''),
+      'process.env.JAMENDO_CLIENT_ID': JSON.stringify(env.JAMENDO_CLIENT_ID || '')
     }
   }
 })
