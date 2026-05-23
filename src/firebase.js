@@ -192,7 +192,7 @@ async function ensureTrackExistsInDb(trackId, optionalMetadata = null) {
 
 // Pre-defined local tracks — seeded from the original admin audio library (src/audio → public/audio)
 // Changed on 2026-05-23 21:15:00
-const SEED_VERSION = 'v4'; // Bump to force-refresh stale localStorage seeds
+const SEED_VERSION = 'v5'; // Bump to force-refresh stale localStorage seeds (logo path fix)
 const defaultMockTracks = [
   {
     id: 'local-001',
