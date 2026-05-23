@@ -53,12 +53,56 @@
         </div>
 
         <!-- Alert messages -->
-        <div 
-          v-if="modalError" 
+        <div
+          v-if="modalError"
           class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold flex items-center gap-2 animate-fade-in"
         >
           <span class="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"></span>
           {{ modalError }}
+        </div>
+
+        <!-- OAuth buttons (Google / GitHub / Facebook) — Added on 2026-05-24 00:30:00 -->
+        <!-- Hidden until provider creds configured in Supabase dashboard. See docs/OAUTH_SETUP.md -->
+        <div v-if="showOAuth" class="space-y-2">
+          <button
+            type="button"
+            @click="handleOAuth('google')"
+            :disabled="modalLoading"
+            class="oauth-btn"
+          >
+            <svg viewBox="0 0 24 24" class="w-4 h-4" aria-hidden="true">
+              <path fill="#EA4335" d="M12 11v3.2h5.3c-.2 1.4-1.6 4-5.3 4-3.2 0-5.8-2.6-5.8-5.9S8.8 6.4 12 6.4c1.8 0 3 .8 3.7 1.4l2.5-2.4C16.6 3.9 14.5 3 12 3 7 3 3 7 3 12s4 9 9 9c5.2 0 8.6-3.6 8.6-8.8 0-.6-.1-1-.2-1.2H12z"/>
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+
+          <button
+            type="button"
+            @click="handleOAuth('github')"
+            :disabled="modalLoading"
+            class="oauth-btn"
+          >
+            <Github class="w-4 h-4" />
+            <span>Continue with GitHub</span>
+          </button>
+
+          <button
+            type="button"
+            @click="handleOAuth('facebook')"
+            :disabled="modalLoading"
+            class="oauth-btn"
+          >
+            <svg viewBox="0 0 24 24" class="w-4 h-4" aria-hidden="true">
+              <path fill="#1877F2" d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7v-3.5h3.1V9.4c0-3 1.8-4.7 4.6-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12H17l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12z"/>
+            </svg>
+            <span>Continue with Facebook</span>
+          </button>
+        </div>
+
+        <div v-if="showOAuth" class="flex items-center gap-2 text-[10px] uppercase tracking-wider text-slate-500">
+          <div class="flex-1 h-px bg-panelBorder"></div>
+          <span>or with email</span>
+          <div class="flex-1 h-px bg-panelBorder"></div>
         </div>
 
         <!-- Form: Sign In -->
@@ -145,11 +189,12 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Sidebar from './components/Sidebar.vue'
 import BottomPlayer from './components/BottomPlayer.vue'
-import { Music, X } from 'lucide-vue-next'
-import { 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword 
+import { Music, X, Github } from 'lucide-vue-next'
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signInWithOAuth
 } from './firebase'
 
 export default {
@@ -158,13 +203,17 @@ export default {
     Sidebar,
     BottomPlayer,
     Music,
-    X
+    X,
+    Github
   },
   setup() {
     const route = useRoute()
     const router = useRouter()
     const showLoginModal = ref(false)
     const activeModalTab = ref('signin')
+    // OAuth feature flag — flip to true once providers configured in Supabase.
+    // Setup guide: docs/OAUTH_SETUP.md
+    const showOAuth = ref(false)
     const modalLoading = ref(false)
     const modalError = ref('')
     const currentUser = ref(null)
@@ -206,6 +255,19 @@ export default {
       } catch (err) {
         modalError.value = err.message || "Invalid credentials."
       } finally {
+        modalLoading.value = false
+      }
+    }
+
+    // OAuth handler — Added on 2026-05-24 00:30:00
+    const handleOAuth = async (provider) => {
+      modalLoading.value = true
+      modalError.value = ''
+      try {
+        await signInWithOAuth(provider)
+        // Redirect happens; flow continues after browser returns.
+      } catch (err) {
+        modalError.value = err.message || `Sign-in with ${provider} failed.`
         modalLoading.value = false
       }
     }
@@ -262,7 +324,9 @@ export default {
       registerPassword,
       closeModal,
       handleModalLogin,
-      handleModalRegister
+      handleModalRegister,
+      handleOAuth,
+      showOAuth
     }
   }
 }
@@ -292,6 +356,31 @@ export default {
 }
 .animate-scale-up {
   animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* OAuth provider buttons — Added on 2026-05-24 00:30:00, fixed 2026-05-24 00:50:00 */
+.oauth-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.oauth-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+.oauth-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
 
